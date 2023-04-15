@@ -17,7 +17,8 @@ var httpClient = new HttpMessageInvoker
                             , AutomaticDecompression = DecompressionMethods.None
                             , UseCookies = false
                             , ActivityHeadersPropagator =
-                                        new ReverseProxyPropagator(DistributedContextPropagator.Current)
+                                        new ReverseProxyPropagator
+                                                    (DistributedContextPropagator.Current)
                             , ConnectTimeout = TimeSpan.FromSeconds(15)
                             ,
                         }
