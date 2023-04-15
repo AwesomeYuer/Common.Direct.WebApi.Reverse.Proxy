@@ -2,17 +2,17 @@
 
 ## Supported features, such as `HttpMethods` and `HttpProtocols` etc.
 
-  Same as `YARP` as below:
+  - Same as `YARP` as below:
 
-  https://github.com/microsoft/reverse-proxy
+    https://github.com/microsoft/reverse-proxy
 
 ## Reference implementation
 
-  https://github.com/microsoft/reverse-proxy/tree/main/samples/ReverseProxy.Direct.Sample
+  - https://github.com/microsoft/reverse-proxy/tree/main/samples/ReverseProxy.Direct.Sample
 
 ## Usage
 
-  https://reverse-proxy-server:5001/ `{Proxyed HTTP protocol: http/https}` / `{Proxyed domain name: www.xxx.com}`:`{Proxyed port: 80/443}` / `{Proxyed Paths}`?`{Proxyed Query String}`
+  - https://reverse-proxy-server:5001/ `{Proxyed HTTP protocol: http/https}` / `{Proxyed domain name: www.xxx.com}`:`{Proxyed port: 80/443}` / `{Proxyed Paths}`?`{Proxyed Query String}`
 
 ## Samples
 
