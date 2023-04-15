@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Net;
 using Yarp.ReverseProxy.Forwarder;
 using Yarp.ReverseProxy.Transforms;
 
@@ -8,21 +7,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpForwarder();
 
 // Configure our own HttpMessageInvoker for outbound calls for proxy operations
-var httpClient = new HttpMessageInvoker
-                    (
-                        new SocketsHttpHandler()
-                        {
-                              UseProxy = false
-                            , AllowAutoRedirect = false
-                            , AutomaticDecompression = DecompressionMethods.None
-                            , UseCookies = false
-                            , ActivityHeadersPropagator =
-                                        new ReverseProxyPropagator
-                                                    (DistributedContextPropagator.Current)
-                            , ConnectTimeout = TimeSpan.FromSeconds(15)
-                            ,
-                        }
-                    );
+var httpMessageInvoker = new HttpMessageInvoker
+                            (
+                                new SocketsHttpHandler()
+                                {
+                                      UseProxy                  = false
+                                    , AllowAutoRedirect         = false
+                                    // , AutomaticDecompression    = DecompressionMethods.All
+                                    // , UseCookies                = false
+                                    , ConnectTimeout            = TimeSpan.FromSeconds(15)
+                                    , ActivityHeadersPropagator = new ReverseProxyPropagator
+                                                                        (
+                                                                            DistributedContextPropagator
+                                                                                                    .Current
+                                                                        )
+                                }
+                            );
 
 var requestOptions = new ForwarderRequestConfig
 {
@@ -56,6 +56,7 @@ app
                                     var pathPrefix = $"/{scheme}/{baseAddress}";
 
                                     var destinationPrefix = $"{scheme}://{baseAddress}";
+                                    var destinationPath = request.Path.Value![pathPrefix.Length..];
 
                                     var forwarderError =
                                             await httpForwarder
@@ -63,22 +64,23 @@ app
                                                         (
                                                               httpContext
                                                             , destinationPrefix
-                                                            , httpClient
+                                                            , httpMessageInvoker
                                                             , requestOptions
                                                             , (context, proxyRequest) =>
                                                             {
                                                                 // Customize the query string:
-                                                                var queryContext = new QueryTransformContext(context.Request);
+                                                                var queryTransformContext =
+                                                                        new QueryTransformContext(context.Request);
                                                                 // Assign the custom uri. Be careful about extra slashes when concatenating here. RequestUtilities.MakeDestinationAddress is a safe default.
                                                                 proxyRequest
                                                                     .RequestUri =
                                                                         RequestUtilities
-                                                                                .MakeDestinationAddress
-                                                                                        (
-                                                                                              destinationPrefix
-                                                                                            , new PathString(path)
-                                                                                            , queryContext.QueryString
-                                                                                        );
+                                                                            .MakeDestinationAddress
+                                                                                    (
+                                                                                          destinationPrefix
+                                                                                        , new PathString(destinationPath)
+                                                                                        , queryTransformContext.QueryString
+                                                                                    );
                                                                 // Suppress the original request header, use the one from the destination Uri.
                                                                 proxyRequest.Headers.Host = null;
                                                                 return default;
@@ -86,7 +88,8 @@ app
                                                         );
 
                                     // Check if the proxy operation was successful
-                                    if (forwarderError != ForwarderError.None)
+                                    if 
+                                        (forwarderError != ForwarderError.None)
                                     {
                                         var forwarderErrorFeature =
                                                     httpContext
