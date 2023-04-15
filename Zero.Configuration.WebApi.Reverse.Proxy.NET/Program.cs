@@ -31,7 +31,7 @@ var app = builder.Build();
 
 app.UseRouting();
 
-var forwarder = app.Services.GetService<IHttpForwarder>();
+var httpForwarder = app.Services.GetService<IHttpForwarder>();
 
 // When using IHttpForwarder for direct forwarding you are responsible for routing, destination discovery, load balancing, affinity, etc..
 // For an alternate example that includes those features see BasicYarpSample.
@@ -57,6 +57,7 @@ app
                                     var path = request.Path.Value![pathPrefix.Length..];
 
                                     var query = request.QueryString.Value;
+
                                     if
                                         (
                                             !string.IsNullOrEmpty(query)
@@ -69,8 +70,8 @@ app
 
                                     var destinationPrefix = $"{scheme}://{baseAddress}";
 
-                                    var error =
-                                            await forwarder
+                                    var forwarderError =
+                                            await httpForwarder
                                                     .SendAsync
                                                         (
                                                               httpContext
@@ -83,14 +84,14 @@ app
                                                                 var queryContext = new QueryTransformContext(context.Request);
                                                                 // Assign the custom uri. Be careful about extra slashes when concatenating here. RequestUtilities.MakeDestinationAddress is a safe default.
                                                                 proxyRequest
-                                                                        .RequestUri =
-                                                                            RequestUtilities
-                                                                                    .MakeDestinationAddress
-                                                                                            (
-                                                                                                    destinationPrefix
-                                                                                                , new PathString(path)
-                                                                                                , queryContext.QueryString
-                                                                                            );
+                                                                    .RequestUri =
+                                                                        RequestUtilities
+                                                                                .MakeDestinationAddress
+                                                                                        (
+                                                                                                destinationPrefix
+                                                                                            , new PathString(path)
+                                                                                            , queryContext.QueryString
+                                                                                        );
                                                                 // Suppress the original request header, use the one from the destination Uri.
                                                                 proxyRequest.Headers.Host = null;
                                                                 return default;
@@ -98,7 +99,7 @@ app
                                                         );
 
                                     // Check if the proxy operation was successful
-                                    if (error != ForwarderError.None)
+                                    if (forwarderError != ForwarderError.None)
                                     {
                                         var errorFeature = httpContext.Features.Get<IForwarderErrorFeature>();
                                         var exception = errorFeature.Exception;
