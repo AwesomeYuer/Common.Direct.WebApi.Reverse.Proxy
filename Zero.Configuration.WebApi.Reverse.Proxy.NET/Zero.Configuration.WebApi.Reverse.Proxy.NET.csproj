@@ -3,20 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Yarp.Sample</RootNamespace>
     <LangVersion>latest</LangVersion>
 	<ImplicitUsings>enable</ImplicitUsings>
-	<EnableSdkContainerSupport>true</EnableSdkContainerSupport>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Startup.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Program.cs.txt" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Yarp.ReverseProxy" Version="2.0.0" />
   </ItemGroup>

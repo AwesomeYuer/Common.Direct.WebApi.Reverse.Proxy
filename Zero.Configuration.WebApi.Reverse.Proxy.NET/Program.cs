@@ -8,15 +8,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpForwarder();
 
 // Configure our own HttpMessageInvoker for outbound calls for proxy operations
-var httpClient = new HttpMessageInvoker(new SocketsHttpHandler()
-{
-    UseProxy = false,
-    AllowAutoRedirect = false,
-    AutomaticDecompression = DecompressionMethods.None,
-    UseCookies = false,
-    ActivityHeadersPropagator = new ReverseProxyPropagator(DistributedContextPropagator.Current),
-    ConnectTimeout = TimeSpan.FromSeconds(15),
-});
+var httpClient = new HttpMessageInvoker
+                    (
+                        new SocketsHttpHandler()
+                        {
+                              UseProxy = false
+                            , AllowAutoRedirect = false
+                            , AutomaticDecompression = DecompressionMethods.None
+                            , UseCookies = false
+                            , ActivityHeadersPropagator =
+                                        new ReverseProxyPropagator(DistributedContextPropagator.Current)
+                            , ConnectTimeout = TimeSpan.FromSeconds(15)
+                            ,
+                        }
+                    );
 
 var requestOptions = new ForwarderRequestConfig
 {
@@ -68,7 +73,7 @@ app
                                             await forwarder
                                                     .SendAsync
                                                         (
-                                                            httpContext
+                                                              httpContext
                                                             , destinationPrefix
                                                             , httpClient
                                                             , requestOptions
