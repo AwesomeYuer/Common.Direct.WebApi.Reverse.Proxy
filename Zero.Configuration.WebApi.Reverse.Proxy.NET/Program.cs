@@ -66,13 +66,13 @@ app
                                                             , destinationPrefix
                                                             , httpMessageInvoker
                                                             , requestOptions
-                                                            , (context, proxyRequest) =>
+                                                            , (context, forwardRequest) =>
                                                             {
                                                                 // Customize the query string:
                                                                 var queryTransformContext =
                                                                         new QueryTransformContext(context.Request);
                                                                 // Assign the custom uri. Be careful about extra slashes when concatenating here. RequestUtilities.MakeDestinationAddress is a safe default.
-                                                                proxyRequest
+                                                                forwardRequest
                                                                     .RequestUri =
                                                                         RequestUtilities
                                                                             .MakeDestinationAddress
@@ -82,7 +82,7 @@ app
                                                                                         , queryTransformContext.QueryString
                                                                                     );
                                                                 // Suppress the original request header, use the one from the destination Uri.
-                                                                proxyRequest.Headers.Host = null;
+                                                                forwardRequest.Headers.Host = null;
                                                                 return default;
                                                             }
                                                         );
