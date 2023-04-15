@@ -6,6 +6,7 @@
     <RootNamespace>Yarp.Sample</RootNamespace>
     <LangVersion>latest</LangVersion>
 	<ImplicitUsings>enable</ImplicitUsings>
+	<EnableSdkContainerSupport>true</EnableSdkContainerSupport>
   </PropertyGroup>
 
   <ItemGroup>
