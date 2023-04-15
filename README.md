@@ -1,6 +1,6 @@
 # Zero.Configuration.WebApi.Reverse.Proxy.NET
 
-- Supported `HttpMethods`
+- Supported features, such as `HttpMethods` and `HttpProtocols` etc.
 
 	Same as `YARP` as below:
 
