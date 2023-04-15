@@ -102,8 +102,11 @@ app
                                     // Check if the proxy operation was successful
                                     if (forwarderError != ForwarderError.None)
                                     {
-                                        var errorFeature = httpContext.Features.Get<IForwarderErrorFeature>();
-                                        var exception = errorFeature.Exception;
+                                        var forwarderErrorFeature =
+                                                    httpContext
+                                                            .Features
+                                                            .Get<IForwarderErrorFeature>();
+                                        var exception = forwarderErrorFeature.Exception;
                                     }
                                 }
                             );
