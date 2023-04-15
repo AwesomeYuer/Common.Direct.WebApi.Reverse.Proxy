@@ -55,20 +55,6 @@ app
 
                                     var pathPrefix = $"/{scheme}/{baseAddress}";
 
-                                    var path = request.Path.Value![pathPrefix.Length..];
-
-                                    var query = request.QueryString.Value;
-
-                                    if
-                                        (
-                                            !string.IsNullOrEmpty(query)
-                                            &&
-                                            !string.IsNullOrWhiteSpace(query)
-                                        )
-                                    {
-                                        query = $"?{query}";
-                                    }
-
                                     var destinationPrefix = $"{scheme}://{baseAddress}";
 
                                     var forwarderError =
