@@ -33,16 +33,16 @@ public static class ReverseProxyFunction
     {
         var originalUri = httpRequestMessage.RequestUri;
         var configurationRoot = new ConfigurationBuilder()
-                                        .SetBasePath
-                                            (
-                                                executionContext
-                                                        .FunctionAppDirectory
-                                            )
-                                        .AddJsonFile
-                                            ("custom.settings.json")
+                                        //.SetBasePath
+                                        //    (
+                                        //        executionContext
+                                        //                .FunctionAppDirectory
+                                        //    )
+                                        //.AddJsonFile
+                                        //    ("custom.settings.json")
                                         .Build();
 
-        var expectSecretPathSegment = configurationRoot["secretPathSegment"];
+        var expectSecretPathSegment = configurationRoot["Values:secretPathSegment"];
         var originalSecretPathSegment = originalUri.Segments[3].Trim('/');
 
         if
