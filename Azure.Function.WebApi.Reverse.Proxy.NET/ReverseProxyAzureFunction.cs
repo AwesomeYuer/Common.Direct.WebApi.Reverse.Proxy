@@ -14,7 +14,7 @@ public static class ReverseProxyFunction
             [
                 HttpTrigger
                     (
-                        AuthorizationLevel.Anonymous
+                          AuthorizationLevel.Anonymous
                         , "get"
                         , "post"
                         , "put"
