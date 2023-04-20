@@ -23,18 +23,21 @@ public static class ReverseProxyFunction
                         , Route = "{* }"
                     )
             ]
-              HttpRequestMessage request
-            , ILogger log
+              HttpRequestMessage httpRequestMessage
+            , ILogger logger
         )
     {
-        var originalUri = request.RequestUri;
-        var scheme = originalUri.Segments[3].Trim('/');
-        var baseAddress = originalUri.Segments[4].Trim('/');
-        var pathPrefix = $"/api/{nameof(ReverseProxyFunction)}/{scheme}/{baseAddress}/";
-        var pathAndQuery = originalUri.PathAndQuery[pathPrefix.Length..];
-        request.RequestUri = new Uri($"{scheme}://{baseAddress}/{pathAndQuery}");
-        request.Headers.Host = null;
-        using var httpClient = new HttpClient();
-        return await httpClient.SendAsync(request);
+        var originalUri = httpRequestMessage.RequestUri;
+        var forwardScheme = originalUri.Segments[3].Trim('/');
+        var forwardBaseAddress = originalUri.Segments[4].Trim('/');
+        var pathPrefix = $"/api/{nameof(ReverseProxyFunction)}/{forwardScheme}/{forwardBaseAddress}/";
+        var forwardPathAndQuery = originalUri.PathAndQuery[pathPrefix.Length..];
+        httpRequestMessage.RequestUri = new Uri($"{forwardScheme}://{forwardBaseAddress}/{forwardPathAndQuery}");
+        httpRequestMessage.Headers.Host = null;
+        using var httpClient = new HttpClient()
+        { 
+            Timeout = TimeSpan.FromSeconds(10 * 60)
+        };
+        return await httpClient.SendAsync(httpRequestMessage);
     }
 }

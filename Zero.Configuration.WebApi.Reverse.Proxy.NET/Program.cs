@@ -50,12 +50,12 @@ app
                                     var request = httpContext.Request;
                                     var pathSegments = request.Path.Value.Split('/');
 
-                                    var scheme = pathSegments[1];
-                                    var baseAddress = pathSegments[2];
+                                    var destinationScheme = pathSegments[1];
+                                    var destinationBaseAddress = pathSegments[2];
 
-                                    var pathPrefix = $"/{scheme}/{baseAddress}";
+                                    var pathPrefix = $"/{destinationScheme}/{destinationBaseAddress}";
 
-                                    var destinationPrefix = $"{scheme}://{baseAddress}";
+                                    var destinationPrefix = $"{destinationScheme}://{destinationBaseAddress}";
                                     var destinationPath = request.Path.Value![pathPrefix.Length..];
 
                                     var forwarderError =
