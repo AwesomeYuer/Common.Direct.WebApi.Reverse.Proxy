@@ -4,6 +4,8 @@ using Yarp.ReverseProxy.Transforms;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var secretPathSegment = builder.Configuration["secretPathSegment"];
+
 builder.Services.AddHttpForwarder();
 
 // Configure our own HttpMessageInvoker for outbound calls for proxy operations
@@ -44,14 +46,14 @@ app
                 endpoints
                         .Map
                             (
-                                "/{**catch-all}"
+                                $"{secretPathSegment}/{{**catch-all}}"
                                 , async (httpContext) =>
                                 {
                                     var request = httpContext.Request;
                                     var pathSegments = request.Path.Value.Split('/');
 
-                                    var destinationScheme = pathSegments[1];
-                                    var destinationBaseAddress = pathSegments[2];
+                                    var destinationScheme = pathSegments[2];
+                                    var destinationBaseAddress = pathSegments[3];
 
                                     var pathPrefix = $"/{destinationScheme}/{destinationBaseAddress}";
 
