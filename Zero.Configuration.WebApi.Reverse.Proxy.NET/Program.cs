@@ -102,6 +102,4 @@ app
             }
         );
 
-app.RunAsync();
-
-Console.WriteLine("aaa");
+app.Run();
