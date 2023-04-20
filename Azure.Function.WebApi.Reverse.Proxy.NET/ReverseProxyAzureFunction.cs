@@ -32,16 +32,11 @@ public static class ReverseProxyFunction
         )
     {
         var originalUri = httpRequestMessage.RequestUri;
-        //var configurationRoot = new ConfigurationBuilder()
-        //                                .AddEnvironmentVariables()
-        //                                .Build();
-        var expectSecretPathSegment =
-#if DEBUG
-        "temp"
-#else
-        Environment.GetEnvironmentVariable("SECRET_PATH_SEGMENT");
-#endif
-        ;
+        var configurationRoot = new ConfigurationBuilder()
+                                        .AddEnvironmentVariables()
+                                        .Build();
+        
+        var expectSecretPathSegment = configurationRoot["SECRET_PATH_SEGMENT"];
 
         var originalSecretPathSegment = originalUri.Segments[3].Trim('/');
 
