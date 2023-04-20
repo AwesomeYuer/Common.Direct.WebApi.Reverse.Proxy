@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Azure.Function.WebApi.Reverse.Proxy;
 public static class ReverseProxyFunction
 {
-    [FunctionName("ReverseProxyFunction")]
+    [FunctionName(nameof(ReverseProxyFunction))]
     public static async Task<HttpResponseMessage> Run
         (
             [
@@ -17,6 +17,9 @@ public static class ReverseProxyFunction
                         AuthorizationLevel.Anonymous
                         , "get"
                         , "post"
+                        , "put"
+                        , "patch"
+                        , "options"
                         , Route = "{* }"
                     )
             ]
@@ -27,7 +30,7 @@ public static class ReverseProxyFunction
         var originalUri = request.RequestUri;
         var scheme = originalUri.Segments[3].Trim('/');
         var baseAddress = originalUri.Segments[4].Trim('/');
-        var pathPrefix = $"/api/ReverseProxyFunction/{scheme}/{baseAddress}/";
+        var pathPrefix = $"/api/{nameof(ReverseProxyFunction)}/{scheme}/{baseAddress}/";
         var pathAndQuery = originalUri.PathAndQuery[pathPrefix.Length..];
         request.RequestUri = new Uri($"{scheme}://{baseAddress}/{pathAndQuery}");
         request.Headers.Host = null;
