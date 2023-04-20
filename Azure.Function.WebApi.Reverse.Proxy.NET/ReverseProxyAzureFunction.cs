@@ -45,7 +45,7 @@ public static class ReverseProxyFunction
                 string
                     .Compare
                         (
-                            expectSecretPathSegment
+                              expectSecretPathSegment
                             , originalSecretPathSegment
                             , StringComparison.OrdinalIgnoreCase
                         )
@@ -54,14 +54,13 @@ public static class ReverseProxyFunction
             )
         {
             return
-
                 new HttpResponseMessage
                                 (
                                     HttpStatusCode.Unauthorized
 
                                 )
                 { 
-                  Content = new StringContent("forbidden!")
+                    Content = new StringContent("forbidden!")
                 };
         }
 
