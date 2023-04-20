@@ -39,7 +39,7 @@ public static class ReverseProxyFunction
                                                         .FunctionAppDirectory
                                             )
                                         .AddJsonFile
-                                            ("custom.settings.json")
+                                            ("host.json")
                                         .Build();
 
         var expectSecretPathSegment = configurationRoot["secretPathSegment"];

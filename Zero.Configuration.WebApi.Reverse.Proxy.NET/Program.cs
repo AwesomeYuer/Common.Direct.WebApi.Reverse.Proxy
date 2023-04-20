@@ -55,7 +55,7 @@ app
                                     var destinationScheme = pathSegments[2];
                                     var destinationBaseAddress = pathSegments[3];
 
-                                    var pathPrefix = $"/{destinationScheme}/{destinationBaseAddress}";
+                                    var pathPrefix = $"/{secretPathSegment}/{destinationScheme}/{destinationBaseAddress}";
 
                                     var destinationPrefix = $"{destinationScheme}://{destinationBaseAddress}";
                                     var destinationPath = request.Path.Value![pathPrefix.Length..];
