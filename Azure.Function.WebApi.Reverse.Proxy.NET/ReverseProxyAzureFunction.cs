@@ -42,7 +42,7 @@ public static class ReverseProxyFunction
                                         //    ("custom.settings.json")
                                         .Build();
 
-        var expectSecretPathSegment = configurationRoot["Values:secretPathSegment"];
+        var expectSecretPathSegment = configurationRoot["secretPathSegment"];
         var originalSecretPathSegment = originalUri.Segments[3].Trim('/');
 
         if
