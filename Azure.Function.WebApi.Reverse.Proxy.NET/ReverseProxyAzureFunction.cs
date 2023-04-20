@@ -56,8 +56,8 @@ public static class ReverseProxyFunction
             return
                 new HttpResponseMessage
                                 (
-                                    HttpStatusCode.Unauthorized
-
+                                    HttpStatusCode
+                                            .Unauthorized
                                 )
                 { 
                     Content = new StringContent("forbidden!")
