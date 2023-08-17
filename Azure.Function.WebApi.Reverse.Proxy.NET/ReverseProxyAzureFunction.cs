@@ -37,6 +37,8 @@ public static class ReverseProxyFunction
         
         var expectSecretPathSegment = configurationRoot["SECRET_PATH_SEGMENT"];
 
+        Console.WriteLine($"expectSecretPathSegment: {expectSecretPathSegment}");
+
         var originalSecretPathSegment = originalUri.Segments[3].Trim('/');
 
         if
