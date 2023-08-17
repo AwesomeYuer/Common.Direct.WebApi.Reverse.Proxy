@@ -1,10 +1,10 @@
-name: Build and deploy .NET Core application to Web App ZeroConfigurationWebApiReverseProxyNET20230817201312
+name: Build and deploy .NET Core application to Web App ZeroConfigurationWebApiReverseProxyNET20230817204147
 on:
   push:
     branches:
     - master
 env:
-  AZURE_WEBAPP_NAME: ZeroConfigurationWebApiReverseProxyNET20230817201312
+  AZURE_WEBAPP_NAME: ZeroConfigurationWebApiReverseProxyNET20230817204147
   AZURE_WEBAPP_PACKAGE_PATH: ./published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
@@ -44,5 +44,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.ZeroConfigurationWebApiReverseProxyNET20230817201312_17CB }}
+        publish-profile: ${{ secrets.ZeroConfigurationWebApiReverseProxyNET20230817204147_3DFC }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
