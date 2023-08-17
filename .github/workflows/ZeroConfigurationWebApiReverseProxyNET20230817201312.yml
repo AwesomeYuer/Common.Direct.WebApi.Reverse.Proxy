@@ -44,5 +44,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.ZeroConfigurationWebApiReverseProxyNET20230817201312_5C54 }}
+        publish-profile: ${{ secrets.ZeroConfigurationWebApiReverseProxyNET20230817201312_17CB }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
