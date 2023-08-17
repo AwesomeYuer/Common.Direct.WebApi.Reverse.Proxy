@@ -1,10 +1,10 @@
-name: Build and deploy .NET Core application to Function App AzureFunctionWebApiReverseProxyNET20230817191051
+name: Build and deploy .NET Core application to Function App AzureFunctionWebApiReverseProxyNET20230817191630
 on:
   push:
     branches:
     - master
 env:
-  AZURE_FUNCTIONAPP_NAME: AzureFunctionWebApiReverseProxyNET20230817191051
+  AZURE_FUNCTIONAPP_NAME: AzureFunctionWebApiReverseProxyNET20230817191630
   AZURE_FUNCTIONAPP_PACKAGE_PATH: ./published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
@@ -42,5 +42,5 @@ jobs:
       uses: Azure/functions-action@v1
       with:
         app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-        publish-profile: ${{ secrets.AzureFunctionWebApiReverseProxyNET20230817191051_1CC1 }}
+        publish-profile: ${{ secrets.AzureFunctionWebApiReverseProxyNET20230817191630_6726 }}
         package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
