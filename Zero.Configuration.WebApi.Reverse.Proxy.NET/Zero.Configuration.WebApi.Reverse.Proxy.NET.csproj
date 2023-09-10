@@ -5,6 +5,7 @@
     <OutputType>Exe</OutputType>
     <LangVersion>latest</LangVersion>
 	<ImplicitUsings>enable</ImplicitUsings>
+	<UserSecretsId>03a852fc-db76-4115-9acb-b0c8259e4436</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Yarp.ReverseProxy" Version="2.0.0" />
