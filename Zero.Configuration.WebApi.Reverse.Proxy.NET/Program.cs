@@ -6,9 +6,11 @@ builder.Services.AddHttpForwarder();
 
 var app = builder.Build();
 
-var secretPathSegment = builder.Configuration["secretPathSegment"];
-app.UseZeroConfigurationWebApiReverseProxy(pathBaseString: secretPathSegment);
+string proxyPathBaseString = builder.Configuration.GetValue(nameof(proxyPathBaseString), "api/proxy");
 
 app.UseRouting();
+app.UseZeroConfigurationWebApiReverseProxy(pathBaseString: proxyPathBaseString);
+
+
 
 app.Run();
