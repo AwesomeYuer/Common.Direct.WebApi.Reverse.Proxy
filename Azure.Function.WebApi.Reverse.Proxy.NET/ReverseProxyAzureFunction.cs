@@ -92,7 +92,6 @@ public static class ReverseProxyFunction
                 {
                     Content = new StringContent("BadRequest!")
                 };
-
         }
         
         p += forwardScheme.Length + 1;
