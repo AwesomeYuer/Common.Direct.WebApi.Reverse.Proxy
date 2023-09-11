@@ -40,15 +40,17 @@ public static class ReverseProxyFunction
                                     .GetValue
                                             (
                                                 "PROXY_PATH_BASE_STRING"
-                                                , "api/ReverseProxyFunction/temp"
+                                                , "ReverseProxyFunction/temp"
                                             )
                                     .Trim('/');
+
+        //expectProxyPathBaseString = "proxy/awesomeyuer@microshaoft";
 
         var originalUri = httpRequestMessage.RequestUri;
 
         var requestPath = originalUri.AbsolutePath;
 
-        expectProxyPathBaseString= $"/{expectProxyPathBaseString}/";
+        expectProxyPathBaseString= $"/api/{expectProxyPathBaseString}/";
 
         if (!requestPath.StartsWith(expectProxyPathBaseString, StringComparison.OrdinalIgnoreCase))
         {
