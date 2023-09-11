@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Azure.Function.WebApi.Reverse.Proxy;
+
 public static class ReverseProxyFunction
 {
     [FunctionName(nameof(ReverseProxyFunction))]
