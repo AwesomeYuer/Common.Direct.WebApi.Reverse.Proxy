@@ -30,29 +30,26 @@ public static class ReverseProxyFunction
             , ILogger logger
         )
     {
-        var originalUri = httpRequestMessage.RequestUri;
         var configurationRoot = new ConfigurationBuilder()
                                         .AddEnvironmentVariables()
                                         .Build();
-        
-        var expectSecretPathSegment = configurationRoot["SECRET_PATH_SEGMENT"];
 
-        Console.WriteLine($"expectSecretPathSegment: {expectSecretPathSegment}");
+        var expectProxyPathBaseString =
+                        configurationRoot
+                                    .GetValue
+                                            (
+                                                "PROXY_PATH_BASE_STRING"
+                                                , "api/ReverseProxyFunction/temp"
+                                            )
+                                    .Trim('/');
 
-        var originalSecretPathSegment = originalUri.Segments[3].Trim('/');
+        var originalUri = httpRequestMessage.RequestUri;
 
-        if
-            (
-                string
-                    .Compare
-                        (
-                              expectSecretPathSegment
-                            , originalSecretPathSegment
-                            , StringComparison.OrdinalIgnoreCase
-                        )
-                !=
-                0
-            )
+        var requestPath = originalUri.AbsolutePath;
+
+        expectProxyPathBaseString= $"/{expectProxyPathBaseString}/";
+
+        if (!requestPath.StartsWith(expectProxyPathBaseString, StringComparison.OrdinalIgnoreCase))
         {
             return
                 new HttpResponseMessage
@@ -61,15 +58,45 @@ public static class ReverseProxyFunction
                                             .Unauthorized
                                 )
                 { 
-                    Content = new StringContent("forbidden!")
+                    Content = new StringContent("Forbidden!")
                 };
         }
 
-        var forwardScheme = originalUri.Segments[4].Trim('/');
-        var forwardBaseAddress = originalUri.Segments[5].Trim('/');
-        var pathPrefix = $"/api/{expectSecretPathSegment}/{nameof(ReverseProxyFunction)}/{forwardScheme}/{forwardBaseAddress}/";
-        var forwardPathAndQuery = originalUri.PathAndQuery[pathPrefix.Length..];
-        httpRequestMessage.RequestUri = new Uri($"{forwardScheme}://{forwardBaseAddress}/{forwardPathAndQuery}");
+        requestPath = requestPath[expectProxyPathBaseString.Length..];
+
+        var p = 0;
+
+        p += originalUri.GetLeftPart(UriPartial.Authority).Length;
+        p += expectProxyPathBaseString.Length;
+
+        var i = requestPath.IndexOf('/');
+
+        var forwardScheme = requestPath[..i];
+
+        if
+            (
+                !forwardScheme.Equals("http", StringComparison.OrdinalIgnoreCase)
+                &&
+                !forwardScheme.Equals("https", StringComparison.OrdinalIgnoreCase)
+            )
+        {
+            return
+                new HttpResponseMessage
+                                (
+                                    HttpStatusCode
+                                            .BadRequest
+                                )
+                {
+                    Content = new StringContent("BadRequest!")
+                };
+
+        }
+        
+        p += forwardScheme.Length + 1;
+
+        var forwardUrl = $"{forwardScheme}://{originalUri.ToString()[p..]}";
+        
+        httpRequestMessage.RequestUri = new Uri(forwardUrl);
         httpRequestMessage.Headers.Host = null;
         using var httpClient = new HttpClient()
         { 

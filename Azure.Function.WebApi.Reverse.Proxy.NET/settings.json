@@ -1,3 +1,3 @@
 {
-  // "secretPathSegment": "temp"
+  "PROXY_PATH_BASE_STRING": "api/ReverseProxyFunction/temp"
 }
