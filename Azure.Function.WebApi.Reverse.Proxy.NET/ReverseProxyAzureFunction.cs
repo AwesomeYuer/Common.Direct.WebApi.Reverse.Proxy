@@ -44,8 +44,6 @@ public static class ReverseProxyFunction
                                             )
                                     .Trim('/');
 
-        //expectProxyPathBaseString = "proxy/awesomeyuer@microshaoft";
-
         var originalUri = httpRequestMessage.RequestUri;
 
         var requestPath = originalUri.AbsolutePath;
