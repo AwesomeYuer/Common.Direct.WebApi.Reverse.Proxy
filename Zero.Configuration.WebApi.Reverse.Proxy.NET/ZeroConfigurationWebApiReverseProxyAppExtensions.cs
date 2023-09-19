@@ -1,11 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using System;
 using System.Diagnostics;
-using System.Net.Http;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Yarp.ReverseProxy.Forwarder;
 using Yarp.ReverseProxy.Transforms;
 
@@ -38,7 +33,6 @@ public static class ZeroConfigurationWebApiReverseProxyAppExtensions
         };
 
         var httpMessageInvoker = new HttpMessageInvoker(socketsHttpHandler);
-#pragma warning restore CA2000 // Dispose objects before losing scope
 
         var requestOptions = new ForwarderRequestConfig
         {
@@ -78,6 +72,7 @@ public static class ZeroConfigurationWebApiReverseProxyAppExtensions
                                             }
 
                                             var request = httpContext.Request;
+
                                             var requestPathSegments = request.Path.Value!.Split('/');
 
                                             var destinationScheme = requestPathSegments[p + 1];
@@ -113,9 +108,11 @@ public static class ZeroConfigurationWebApiReverseProxyAppExtensions
                                                                                             );
                                                                         // Suppress the original request header, use the one from the destination Uri.
                                                                         forwardRequest.Headers.Host = null;
+
                                                                         return default;
                                                                     }
                                                                 );
+
 
                                             // Check if the proxy operation was successful
                                             if
@@ -127,10 +124,10 @@ public static class ZeroConfigurationWebApiReverseProxyAppExtensions
                                                                     .Get<IForwarderErrorFeature>();
                                                 var exception = forwarderErrorFeature!.Exception;
                                             }
+
                                         }
                                     );
                     }
-                )
-            ;
+                );
     }
 }
