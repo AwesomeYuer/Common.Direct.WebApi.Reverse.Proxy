@@ -1,14 +1,16 @@
+// Copyright (c) Microsoft. All rights reserved.
+
 using Microshaoft;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 //builder.Services.Configure<KestrelServerOptions>(options =>
 //{
 //    options.AllowSynchronousIO = true;
 //});
+
+var configuration = builder.Configuration;
 
 builder.Services.AddHttpForwarder();
 
@@ -16,7 +18,7 @@ var app = builder.Build();
 
 app.UseFileServer();
 
-string proxyPathBaseString = builder.Configuration.GetValue(nameof(proxyPathBaseString), "api/proxy");
+string proxyPathBaseString = configuration.GetValue(nameof(proxyPathBaseString), "api/proxy");
 
 app.UseRouting();
 
@@ -55,15 +57,18 @@ app
                     next(context);
                 responseBodyWorkingStream
                         .Position = 0;
-            
+
                 using var responseBodyStreamReader = new StreamReader(responseBodyWorkingStream);
-            
+
                 var responseBodyText = await responseBodyStreamReader.ReadToEndAsync();
                 if (response.ContentType == "application/json")
                 {
                     responseBodyText = requestBodyText.AsJsonEscapeUnsafeRelaxedJson();
                 }
-                responseBodyText = "*******";
+                if (args.Length > 0 && args[0] == "-o")
+                {
+                    responseBodyText = "*******";
+                }
 
                 logger.LogError($@"
 
@@ -89,7 +94,7 @@ __________________
                                     (
                                         originalResponseBodyStream
                                     );
-            
+
                 response
                     .Body = originalResponseBodyStream;
             }
@@ -97,20 +102,35 @@ __________________
 
 app.UseZeroConfigurationWebApiReverseProxy(pathBaseString: proxyPathBaseString);
 
-_ = Task.Run
-        (
-            () =>
-            { 
-                while (1 == 1) 
+// add by Awesome Yuer
+bool enableClearConsole = configuration.GetValue(nameof(enableClearConsole), true);
+if (enableClearConsole)
+{
+    _ = Task.Run
+    (
+        () =>
+        {
+            while (1 == 1)
+            {
+                var input = Console.ReadLine();
+                if (input!.Equals("clear", StringComparison.OrdinalIgnoreCase))
                 {
-                    var input = Console.ReadLine();
-                    if (input.Equals("clear", StringComparison.OrdinalIgnoreCase))
-                    { 
+                    Console.SetCursorPosition(0, 0);
+                    for (int i = 0; i < 8; i++)
+                    {
+                        // Invalid when run in Windows Terminal
+                        // You can set keybindings such as "Ctrl + k" for clear buffer in Windows Terminal by yourself
                         Console.Clear();
                     }
+                    Console.WriteLine($"<<<<<<<<<<<<<<<控制台已清屏 @ {DateTime.Now: yyyy-MM-dd HH:mm:ss.fffff}>>>>>>>>>>>>>>>>");
+                }
+                else
+                {
+                    Console.WriteLine(@"输入""clear""可以清屏控制台");
                 }
             }
-
-        );
+        }
+    );
+}
 
 app.Run();
