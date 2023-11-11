@@ -2,6 +2,8 @@
 
 using Microshaoft;
 using Microsoft.AspNetCore.Http.Extensions;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,12 @@ string proxyPathBaseString = configuration.GetValue(nameof(proxyPathBaseString),
 app.UseRouting();
 
 var logger = app.Logger;
+
+var jsonSerializerOptions = new JsonSerializerOptions()
+{
+    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    , WriteIndented = true
+};
 
 app
     .Use
@@ -65,9 +73,20 @@ app
                 {
                     responseBodyText = requestBodyText.AsJsonEscapeUnsafeRelaxedJson();
                 }
-                if (args.Length > 0 && args[0] == "-o")
+
+                var requestHeadersJson = JsonSerializer.Serialize(request.Headers, jsonSerializerOptions);
+                var responseHeadersJson = JsonSerializer.Serialize(response.Headers, jsonSerializerOptions);
+
+                if (args.Length > 0)
                 {
-                    responseBodyText = "*******";
+                    if (args.Any(x => x.Equals("-o", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        responseBodyText = "*******";
+                    }
+                    if (args.Any(x => x.Equals("-h", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        requestHeadersJson = responseHeadersJson = "*******";
+                    }
                 }
 
                 logger.LogError($@"
@@ -75,9 +94,15 @@ app
 <<<<<<<<<<<<<<<<<<
 {context.Request.GetDisplayUrl()}
 {context.Request.GetEncodedUrl()}
-
+===========================
+Request.Headers:
+{requestHeadersJson}
+===========================
 Request.Body:
 {requestBodyText}
+===========================
+Response.Headers:
+{responseHeadersJson}
 ===========================
 Respose.Body:
 {responseBodyText}
